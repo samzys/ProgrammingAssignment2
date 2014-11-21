@@ -7,16 +7,30 @@
 ##the checking for matrix is omitted. 
 ##This function is to create a list contains functions to set/get 
 ##the input matrix, and set/get the inverse of the input matrix
+
 makeCacheMatrix <- function(x = matrix()) {
+  #init. reset to NULL
   invMatrix<-NULL
+  
+  #setter and getter for matrix X
   set<-function(y){
     x<<-y
     invMatrix<<-NULL
   }
-  get<-function() x
-  setInv<-function(Invm) invMatrix<<- Invm
-  getInv<-function() invMatrix
+  get<-function(){
+    x 
+  }
   
+  #setter and getter for the inversed matrix
+  setInv<-function(Invm){
+    invMatrix<<- Invm
+  } 
+  getInv<-function(){
+    invMatrix
+  } 
+  
+  #This is a list of the internal functions 
+  #so a calling function knows how to access those methods.       
   list(set = set, get=get,
        setInv=setInv, 
        getInv=getInv)  
@@ -30,14 +44,22 @@ makeCacheMatrix <- function(x = matrix()) {
 ##the value of the inverse in the cache via the setInv function
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  #access the object x and get the Inverse matrix      
   m<-x$getInv()
+  
+  #if it was already cached, return the matrix 
+  # and end execution here
   if(!is.null(m)){
     message("getting cached data")
     return(m)
   }
+  
+  #if m is NULL, calaculte inverse using solve function of R
+  # and then store the inverse into x object
   data<-x$get()
   m<-solve(data, ...)
   x$setInv(m)
+  
+  #return the inverse
   m
 }
